@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/css/settings.css">
+    <script src="/admin/css/js/settingsscript.js" defer></script>
+    <title>Settings</title>
+</head>
+<body>
+<!-- SIDEBAR -->
+<section id="sidebar">
+    <a href="#" class="brand">
+        <i class='bx bxs-capsule'></i>
+        <span class="text">MediStore Admin</span>
+    </a>
+    <ul class="side-menu top">
+        <li>
+            <a href="/admin/css/index.html">
+                <i class='bx bxs-dashboard'></i>
+                <span class="text">Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/medicine.html">
+                <i class='bx bxs-capsule'></i>
+                <span class="text">Medicines</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/prescriptions.html">
+                <i class='bx bxs-file'></i>
+                <span class="text">Prescriptions</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/css/pages/order.html">
+                <i class='bx bx-user'></i>
+                <span class="text">Orders</span>
+            </a>
+        </li>
+<!--        <li>-->
+<!--            <a href="/admin/css/pages/inventory.html">-->
+<!--                <i class='bx bxs-box'></i>-->
+<!--                <span class="text">Inventory</span>-->
+<!--            </a>-->
+<!--        </li>-->
+        <li>
+            <a href="/admin/css/pages/users.html">
+                <i class='bx bx-user'></i>
+                <span class="text">Users</span>
+            </a>
+        </li>
+<!--        <li>-->
+<!--            <a href="/admin/css/pages/delivery.html">-->
+<!--                <i class='bx bxs-truck'></i>-->
+<!--                <span class="text">Delivery</span>-->
+<!--            </a>-->
+<!--        </li>-->
+    </ul>
+    <ul class="side-menu">
+        <li class="active">
+            <a href="/admin/css/pages/settings.html">
+                <i class='bx bxs-cog'></i>
+                <span class="text">Settings</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="logout">
+                <i class='bx bxs-log-out-circle'></i>
+                <span class="text">Logout</span>
+            </a>
+        </li>
+    </ul>
+</section>
+<!-- SIDEBAR -->
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <a href="#" class="nav-link">Settings</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell'></i>
+            <span class="num">3</span>
+        </a>
+        <a href="#" class="profile">
+            <img src="img/people.png">
+        </a>
+    </nav>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>Settings</h1>
+                <ul class="breadcrumb">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><i class='bx bx-chevron-right'></i></li>
+                    <li><a class="active" href="#">Settings</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="saveSettingsBtn">
+                    <i class='bx bxs-save'></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SETTINGS SECTIONS -->
+        <div class="settings-container">
+            <!-- ACCOUNT SETTINGS -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2>Account Settings</h2>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <label for="adminName">Admin Name</label>
+                        <input type="text" id="adminName" placeholder="Enter admin name" value="Admin User">
+                    </div>
+                    <div class="setting-item">
+                        <label for="adminEmail">Email Address</label>
+                        <input type="email" id="adminEmail" placeholder="Enter email address" value="admin@medistore.com">
+                    </div>
+                    <div class="setting-item">
+                        <label>Change Password</label>
+                        <button class="btn btn-primary" id="changePasswordBtn">
+                            <i class='bx bxs-lock'></i> Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATION SETTINGS -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2>Notification Settings</h2>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item checkbox-group">
+                        <label>
+                            <input type="checkbox" id="emailNotifications" checked>
+                            Receive Email Notifications
+                        </label>
+                        <p class="description">Get updates about orders, deliveries, and system alerts via email.</p>
+                    </div>
+                    <div class="setting-item checkbox-group">
+                        <label>
+                            <input type="checkbox" id="smsNotifications">
+                            Receive SMS Notifications
+                        </label>
+                        <p class="description">Get critical alerts via SMS (e.g., delivery delays).</p>
+                    </div>
+                    <div class="setting-item">
+                        <label for="notificationFrequency">Notification Frequency</label>
+                        <select id="notificationFrequency">
+                            <option value="instant">Instant</option>
+                            <option value="daily" selected>Daily Digest</option>
+                            <option value="weekly">Weekly Summary</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPEARANCE SETTINGS -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2>Appearance</h2>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <label>Theme</label>
+                        <div class="theme-toggle">
+                            <input type="checkbox" id="themeToggle" checked>
+                            <label for="themeToggle">Dark Mode</label>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="fontSize">Font Size</label>
+                        <select id="fontSize">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD MODAL -->
+        <div id="changePasswordModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Change Password</h2>
+                    <span class="close">×</span>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    <div class="setting-item">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="setting-item">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="savePasswordBtn">
+                            <i class='bx bxs-save'></i> Save Password
+                        </button>
+                        <button class="btn btn-cancel" id="cancelPasswordBtn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END CHANGE PASSWORD MODAL -->
+    </main>
+    <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+</body>
+</html>
