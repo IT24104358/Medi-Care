@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "customerName": "Alice Johnson",
+    "productName": "Surgical Gloves",
+    "quantity": 10,
+    "totalPrice": 50.00,
+    "status": "Pending",
+    "date": "2025-05-06"
+  },
+  {
+    "id": 2,
+    "customerName": "Bob Smith",
+    "productName": "Face Masks",
+    "quantity": 20,
+    "totalPrice": 40.00,
+    "status": "Confirmed",
+    "date": "2025-05-06"
+  },
+  {
+    "id": 3,
+    "customerName": "Charlie Davis",
+    "productName": "Thermometer",
+    "quantity": 5,
+    "totalPrice": 75.00,
+    "status": "Processing",
+    "date": "2025-05-06"
+  }
+]
