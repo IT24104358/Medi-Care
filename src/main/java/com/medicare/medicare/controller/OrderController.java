@@ -1,9 +1,7 @@
 package com.medicare.medicare.controller;
 
 import com.medicare.medicare.model.Order;
-import com.medicare.medicare.model.OrderDetails;
 import com.medicare.medicare.service.OrderService;
-import com.medicare.medicare.service.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +14,12 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderDetailService orderDetailService;
+
 
     @Autowired
-    public OrderController(OrderService orderService, OrderDetailService orderDetailService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderDetailService = orderDetailService;
+
     }
 
     // Simple order summary list
@@ -38,9 +36,7 @@ public class OrderController {
 
     // Full order details by Order ID (String)
     @GetMapping("/details/{orderId}")
-    public OrderDetails getOrderDetails(@PathVariable String orderId) {
-        return orderDetailService.getOrderDetailById(orderId);
-    }
+    
 
     @PostMapping
     public Order createOrder(@RequestBody Order order) {

@@ -3,7 +3,7 @@ package com.medicare.medicare.repository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicare.medicare.model.Order;
-import com.medicare.medicare.model.OrderDetails;
+//import com.medicare.medicare.model.OrderDetails;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -32,17 +32,17 @@ public class OrderFileRepository {
     }
 
     // Load orders from the resource file
-    public List<OrderDetails> loadOrders() {
-        try (InputStream is = getClass().getResourceAsStream("/data/orders.json")) {
-            if (is == null) {
-                throw new IOException("Resource not found");
-            }
-            return objectMapper.readValue(is, new TypeReference<List<OrderDetails>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to load orders from resource", e);
-        }
-    }
+//    public List<OrderDetails> loadOrders() {
+//        try (InputStream is = getClass().getResourceAsStream("/data/orders.json")) {
+//            if (is == null) {
+//                throw new IOException("Resource not found");
+//            }
+//            return objectMapper.readValue(is, new TypeReference<List<OrderDetails>>() {});
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Unable to load orders from resource", e);
+//        }
+//    }
 
     // Find an order by its ID
     public Optional<Order> findById(Long id) {

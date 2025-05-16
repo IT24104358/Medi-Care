@@ -3,7 +3,7 @@ package com.medicare.medicare.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicare.medicare.model.Product;
-import com.medicare.medicare.model.User;
+//import com.medicare.medicare.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,32 +18,32 @@ public class DataInitializationService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @com.medicare.medicare.config.PostConstruct
-    public void initData() {
-        initUsers();
-        initProducts();
-    }
+//    public void initData() {
+//        initUsers();
+//        initProducts();
+//    }
 
-    private void initUsers() {
-        File file = new File(USERS_FILE_PATH);
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-
-                // Create default admin user
-                List<User> defaultUsers = new ArrayList<>();
-                User admin = new User();
-                admin.setId(1L);
-                admin.setUsername("admin");
-                admin.setPassword("admin123");
-                admin.setAdmin(true);
-                defaultUsers.add(admin);
-
-                objectMapper.writeValue(file, defaultUsers);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void initUsers() {
+//        File file = new File(USERS_FILE_PATH);
+//        if (!file.exists()) {
+//            try {
+//                file.getParentFile().mkdirs();
+//
+//                // Create default admin user
+//                List<User> defaultUsers = new ArrayList<>();
+//                User admin = new User();
+//                admin.setId(1L);
+//                admin.setUsername("admin");
+//                admin.setPassword("admin123");
+//                admin.setAdmin(true);
+//                defaultUsers.add(admin);
+//
+//                objectMapper.writeValue(file, defaultUsers);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     private void initProducts() {
         File file = new File(PRODUCTS_FILE_PATH);
