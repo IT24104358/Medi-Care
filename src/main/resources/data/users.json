@@ -1,0 +1,17 @@
+[ {
+  "id" : 1,
+  "username" : "Admin",
+  "email" : "admin@medicare.com",
+  "password" : "admin123",
+  "phone" : "",
+  "address" : "",
+  "role" : "ADMIN"
+}, {
+  "id" : 2,
+  "username" : "Manawadu",
+  "email" : "uvindu@gmail.com",
+  "password" : "manawadu#",
+  "phone" : "077123456",
+  "address" : "234/2,perera rd",
+  "role" : "USER"
+} ]
