@@ -1,93 +1,59 @@
 package com.medicalstore.model;
 
-import java.time.LocalDate;
-import java.util.List;
+public class Review {
+    private int rating;
+    private String title;
+    private String content;
+    private String userName;
+    private String userEmail;
 
-public class Order {
-    private String orderNumber;
-    private LocalDate orderDate;
-    private String paymentMethod;
-    private BillingAddress billingAddress;
-    private List<Item> items;
-    private double shippingCost;
-    private List<Review> reviews;
+    public Review() {}
 
-    // Constructor
-    public Order() {}
-
-    public Order(String orderNumber, LocalDate orderDate, String paymentMethod,
-                 BillingAddress billingAddress, List<Item> items, double shippingCost, List<Review> reviews) {
-        this.orderNumber = orderNumber;
-        this.orderDate = orderDate;
-        this.paymentMethod = paymentMethod;
-        this.billingAddress = billingAddress;
-        this.items = items;
-        this.shippingCost = shippingCost;
-        this.reviews = reviews;
+    public Review(int rating, String title, String content, String userName, String userEmail) {
+        this.rating = rating;
+        this.title = title;
+        this.content = content;
+        this.userName = userName;
+        this.userEmail = userEmail;
     }
 
-    // Getters and Setters
-    public String getOrderNumber() {
-        return orderNumber;
+    public int getRating() {
+        return rating;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
-    public LocalDate getOrderDate() {
-        return orderDate;
+    public String getTitle() {
+        return title;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
-        this.orderDate = orderDate;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public String getContent() {
+        return content;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public BillingAddress getBillingAddress() {
-        return billingAddress;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setBillingAddress(BillingAddress billingAddress) {
-        this.billingAddress = billingAddress;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public double getShippingCost() {
-        return shippingCost;
-    }
-
-    public void setShippingCost(double shippingCost) {
-        this.shippingCost = shippingCost;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public double getSubtotal() {
-        return items.stream().mapToDouble(Item::getTotalPrice).sum();
-    }
-
-    public double getTotal() {
-        return getSubtotal() + shippingCost;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }
