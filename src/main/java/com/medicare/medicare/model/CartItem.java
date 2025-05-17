@@ -90,5 +90,5 @@ public class CartItem implements Serializable {
     // Calculate total price for this item
     public double getTotalPrice() {
         return price * quantity;
-
+}
 }*/
