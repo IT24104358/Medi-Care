@@ -740,3 +740,11 @@ button:hover,
         min-width: 420px;
     }
 }
+
+.header-right-part {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+}

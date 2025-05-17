@@ -23,88 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // TODO LIST FUNCTIONALITY (only on pages with a todo list, e.g., index.html)
-    const addTodoBtn = document.getElementById('add-todo-btn');
-    const todoInputDiv = document.querySelector('.todo-input');
-    const newTodoInput = document.getElementById('new-todo');
-    const submitTodoBtn = document.getElementById('submit-todo');
-    const todoList = document.querySelector('.todo-list');
-
-    if (addTodoBtn && todoInputDiv && newTodoInput && submitTodoBtn && todoList) {
-        // Load todos from localStorage
-        const loadTodos = () => {
-            const todos = JSON.parse(localStorage.getItem('todos')) || [
-                'Verify new prescriptions',
-                'Restock Paracetamol',
-                'Reply to customer emails',
-                'Dispatch 10 pending orders',
-                'Check inventory alerts',
-                'Update patient records',
-                'Review sales report'
-            ];
-            todoList.innerHTML = '';
-            todos.forEach(todo => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <p>${todo}</p>
-                    <i class='bx bx-trash delete-todo'></i>
-                `;
-                todoList.appendChild(li);
-            });
-        };
-
-        // Save todos to localStorage
-        const saveTodos = () => {
-            const todos = [];
-            todoList.querySelectorAll('li p').forEach(p => {
-                todos.push(p.textContent);
-            });
-            localStorage.setItem('todos', JSON.stringify(todos));
-        };
-
-        // Initial load
-        loadTodos();
-
-        // Toggle input field
-        addTodoBtn.addEventListener('click', () => {
-            todoInputDiv.style.display = todoInputDiv.style.display === 'none' ? 'flex' : 'none';
-            newTodoInput.focus();
-        });
-
-        // Add new todo
-        submitTodoBtn.addEventListener('click', () => {
-            const todoText = newTodoInput.value.trim();
-            if (todoText !== '') {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <p>${todoText}</p>
-                    <i class='bx bx-trash delete-todo'></i>
-                `;
-                todoList.appendChild(li);
-                newTodoInput.value = '';
-                todoInputDiv.style.display = 'none';
-                saveTodos();
-            }
-        });
-
-        // Delete todo
-        todoList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-todo')) {
-                e.target.parentElement.remove();
-                saveTodos();
-            }
-        });
-
-        // Submit todo with Enter key
-        newTodoInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                submitTodoBtn.click();
-            }
-        });
-    }
-
     // MEDICINE MANAGEMENT (only on medicines.html)
-    let medicines = JSON.parse(localStorage.getItem('medicines')) || [];
+    let medicines = [];
 
     // DOM elements for medicine management
     const medicineForm = document.getElementById('medicineForm');
@@ -239,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function editMedicine(e) {
             const id = e.currentTarget.dataset.id;
-            const medicine = medicines.find(med => med.id === id);
+            const medicine = medicines.find(med => String(med.id) === id);
 
             if (!medicine) return;
 
@@ -249,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
             medicinePrice.value = medicine.price;
             medicineStock.value = medicine.stock;
             medicineDescription.value = medicine.description;
-            prescriptionRequired.value = medicine.prescriptionRequired;
+            prescriptionRequired.value = medicine.prescription;
 
             formTitle.textContent = 'Update Medicine';
             saveButton.textContent = 'Update Medicine';

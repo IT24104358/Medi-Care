@@ -673,3 +673,11 @@ body.dark .notification-toast {
         max-width: 100%;
     }
 }
+
+.header-right-part {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+}

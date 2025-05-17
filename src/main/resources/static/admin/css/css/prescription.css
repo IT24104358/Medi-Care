@@ -883,3 +883,11 @@ body.dark .notification-toast {
         display: none !important;
     }
 }
+
+.header-right-part {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+}
