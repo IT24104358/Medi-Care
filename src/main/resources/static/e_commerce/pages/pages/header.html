@@ -1,3 +1,4 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <header>
     <div class="header-top">
         <div class="container">
@@ -12,10 +13,13 @@
                         <span>medicare@.com</span>
                     </div>
                 </div>
-                <div class="user-actions">
+                <!--<div class="user-actions">
                     <a href="login.html" class="action-link">Sign In</a>
                     <span class="divider">|</span>
                     <a href="register.html" class="action-link">Register</a>
+                </div>-->
+                <div class="user-actions">
+                    <a th:href="@{/logout}" class="action-link">Sign Out</a>
                 </div>
             </div>
         </div>
@@ -48,7 +52,7 @@
                         <i class='bx bx-cart'></i>
                         <span class="cart-count">2</span>
                     </a>
-                    <a href="#" class="icon-link">
+                    <a href="/e_commerce/pages/pages/profile.html" class="icon-link cart-icon">
                         <i class='bx bx-user'></i>
                     </a>
                     <button class="mobile-menu-toggle">
