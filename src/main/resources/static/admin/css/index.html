@@ -10,6 +10,9 @@
     <title>AdminHub</title>
 </head>
 <body>
+<!-- Add admin auth check script -->
+<script src="/admin/css/js/admin-auth-check.js"></script>
+
 <!-- SIDEBAR -->
 <section id="sidebar">
     <a href="/admin/css/index.html" class="brand">
@@ -223,5 +226,22 @@
 
 <!-- JavaScript -->
 <script src="/admin/css/js/indexscript.js"></script>
+
+<!-- Add logout script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add logout functionality
+        const logoutButton = document.querySelector('.logout');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear user session
+                sessionStorage.removeItem('currentUser');
+                // Redirect to login page
+                window.location.href = '/e_commerce/pages/pages/login.html';
+            });
+        }
+    });
+</script>
 </body>
 </html>

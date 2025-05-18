@@ -27,25 +27,81 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const email = emailInput.value;
+        // Trim whitespace from email to prevent issues
+        const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-        // This is where you would normally send the data to a server
-        // For demonstration, we'll just show a success or error message
+        console.log("Attempting login with email:", email);
 
-        if (email === "test@example.com" && password === "password123") {
-            // Success - redirect to dashboard
-            window.location.href = "dashboard.html";
-        } else {
-            // Show error message
-            const errorMessage = document.getElementById('error-message');
-            const errorText = document.getElementById('error-text');
-            errorText.textContent = "Invalid email or password";
-            errorMessage.style.display = "flex";
+        // Show loading state (optional)
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.textContent = 'Signing in...';
+        submitButton.disabled = true;
 
-            // Clear password field
-            passwordInput.value = "";
-        }
+        // Send login request to API
+        fetch('/api/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(response => {
+                console.log("Response status:", response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log("Login response:", data);
+
+                if (data.message === 'Login successful') {
+                    // Save user data to sessionStorage
+                    sessionStorage.setItem('currentUser', JSON.stringify({
+                        id: data.id,
+                        username: data.username,
+                        email: data.email,
+                        phone: data.phone,
+                        address: data.address,
+                        role: data.role,
+                        isAdmin: data.isAdmin
+                    }));
+
+                    // Update UI if we're not redirecting right away
+                    if (typeof updateAuthUI === 'function') {
+                        updateAuthUI();
+                    }
+
+                    // Redirect based on user role
+                    if (data.isAdmin) {
+                        // Redirect admin to admin dashboard
+                        window.location.href = '/admin/css/index.html';
+                    } else {
+                        // Redirect regular user to e-commerce home
+                        window.location.href = '/e_commerce/pages/index.html';
+                    }
+                } else {
+                    // Show error message
+                    const errorMessage = document.getElementById('error-message');
+                    const errorText = document.getElementById('error-text');
+                    errorText.textContent = data.message || 'Invalid email or password';
+                    errorMessage.style.display = 'flex';
+
+                    // Clear password field
+                    passwordInput.value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                // Show generic error message
+                const errorMessage = document.getElementById('error-message');
+                const errorText = document.getElementById('error-text');
+                errorText.textContent = 'An error occurred during login. Please try again.';
+                errorMessage.style.display = 'flex';
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.textContent = 'Sign In';
+                submitButton.disabled = false;
+            });
     });
 
     // Remember me functionality
@@ -61,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Save email if remember me is checked
     loginForm.addEventListener('submit', function() {
         if (rememberCheckbox.checked) {
-            localStorage.setItem('medicare_email', emailInput.value);
+            localStorage.setItem('medicare_email', emailInput.value.trim());
         } else {
             localStorage.removeItem('medicare_email');
         }

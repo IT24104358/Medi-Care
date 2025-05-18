@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Online Medical Store</title>
+    <title>Medicare - Your Health, Our Priority</title>
     <link rel="stylesheet" href="/e_commerce/pages/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Add auth.js early in the page load -->
+    <script src="/e_commerce/pages/js/auth.js"></script>
 </head>
 <body>
 <!-- HEADER -->
 <header id="dynamic-header"></header>
 <script>
-    // Specify the correct path to your header.html file
+    // Load header
     fetch("/e_commerce/pages/pages/header.html")
         .then((response) => response.text())
         .then((data) => {
             document.getElementById("dynamic-header").innerHTML = data;
+
+            // After header is loaded, update auth UI
+            if (typeof updateAuthUI === 'function') {
+                setTimeout(updateAuthUI, 100); // Small delay to ensure DOM is updated
+            }
         })
         .catch((error) => {
             console.error("Error loading header:", error);
@@ -35,17 +42,8 @@
     </div>
     <ul class="mobile-nav-links">
         <li><a href="index.html" class="active">Home</a></li>
-        <li class="mobile-dropdown">
-            <a href="#" class="mobile-dropdown-toggle">
-                Medicines
-                <i class='bx bx-chevron-down'></i>
-            </a>
-            <ul class="mobile-dropdown-menu">
-                <li><a href="#">Prescription Medicines</a></li>
-                <li><a href="#">Over-the-Counter</a></li>
-                <li><a href="#">Ayurvedic</a></li>
-                <li><a href="#">Homeopathy</a></li>
-            </ul>
+        <li>
+            <a href="/e_commerce/pages/pages/medicines.html" onclick="window.location.href='/e_commerce/pages/pages/medicines.html'; return false;">Medicines</a>
         </li>
         <li class="mobile-dropdown">
             <a href="#" class="mobile-dropdown-toggle">
@@ -68,14 +66,14 @@
             <i class='bx bx-heart'></i>
             <span>Wishlist</span>
         </a>
-        <a href="#" class="mobile-action-link">
+        <!-- <a href="/e_commerce/pages/pages/profile.html" class="mobile-action-link">
             <i class='bx bx-user'></i>
             <span>My Account</span>
-        </a>
-        <div class="mobile-auth">
+        </a> -->
+        <!-- <div class="mobile-auth">
             <a href="#" class="mobile-auth-link">Sign In</a>
             <a href="#" class="mobile-auth-link">Register</a>
-        </div>
+        </div> -->
     </div>
 </div>
 </header>
@@ -317,14 +315,14 @@
     <div class="container">
         <div class="section-header">
             <h2>What Our Customers Say</h2>
-            <p>Trusted by thousands of customers nationwide</p>
+            <p>Testimonials from our satisfied customers</p>
         </div>
         <div class="testimonial-slider">
             <div class="testimonial-wrapper">
                 <div class="testimonial-slide active">
                     <div class="testimonial-card">
                         <div class="testimonial-image">
-                            <img src="https://placehold.co/100x100" alt="Sarah Johnson">
+                            <img src="https://placehold.co/80x80" alt="John Doe">
                         </div>
                         <div class="testimonial-rating">
                             <i class='bx bxs-star'></i>
@@ -333,32 +331,32 @@
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star'></i>
                         </div>
-                        <p class="testimonial-text">"The service at MediCare is exceptional. I always find what I need, and the staff is incredibly helpful with prescription refills."</p>
-                        <h4 class="testimonial-name">Sarah Johnson</h4>
+                        <p class="testimonial-text">"I've been using MediCare for all my medical needs for the past year. The service is prompt, and their prices are unbeatable. Highly recommended!"</p>
+                        <h4 class="testimonial-name">John Doe</h4>
                         <p class="testimonial-role">Regular Customer</p>
                     </div>
                 </div>
                 <div class="testimonial-slide">
                     <div class="testimonial-card">
                         <div class="testimonial-image">
-                            <img src="https://placehold.co/100x100" alt="Michael Chen">
+                            <img src="https://placehold.co/80x80" alt="Jane Smith">
                         </div>
                         <div class="testimonial-rating">
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star'></i>
-                            <i class='bx bx-star'></i>
+                            <i class='bx bxs-star-half'></i>
                         </div>
-                        <p class="testimonial-text">"As a healthcare professional, I appreciate the quality and authenticity of products available at MediCare. Their online ordering system is seamless."</p>
-                        <h4 class="testimonial-name">Michael Chen</h4>
-                        <p class="testimonial-role">Healthcare Professional</p>
+                        <p class="testimonial-text">"The prescription upload feature is a game-changer! I no longer have to physically visit pharmacies. The delivery is quick and the medicines are authentic."</p>
+                        <h4 class="testimonial-name">Jane Smith</h4>
+                        <p class="testimonial-role">Verified Buyer</p>
                     </div>
                 </div>
                 <div class="testimonial-slide">
                     <div class="testimonial-card">
                         <div class="testimonial-image">
-                            <img src="https://placehold.co/100x100" alt="Emily Rodriguez">
+                            <img src="https://placehold.co/80x80" alt="Robert Johnson">
                         </div>
                         <div class="testimonial-rating">
                             <i class='bx bxs-star'></i>
@@ -367,9 +365,9 @@
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star'></i>
                         </div>
-                        <p class="testimonial-text">"I recently switched to MediCare for my family's medical needs, and I'm impressed with their competitive prices and home delivery service."</p>
-                        <h4 class="testimonial-name">Emily Rodriguez</h4>
-                        <p class="testimonial-role">New Customer</p>
+                        <p class="testimonial-text">"As a senior citizen, I find it difficult to go out and buy medicines. MediCare has made life much easier for me. Their customer service is exceptional!"</p>
+                        <h4 class="testimonial-name">Robert Johnson</h4>
+                        <p class="testimonial-role">Loyal Customer</p>
                     </div>
                 </div>
             </div>
@@ -378,9 +376,9 @@
                     <i class='bx bx-chevron-left'></i>
                 </button>
                 <div class="testimonial-dots">
-                    <span class="dot active" data-slide="0"></span>
-                    <span class="dot" data-slide="1"></span>
-                    <span class="dot" data-slide="2"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
                 </div>
                 <button class="testimonial-next">
                     <i class='bx bx-chevron-right'></i>
@@ -390,7 +388,49 @@
     </div>
 </section>
 
+<!-- OFFERS SECTION -->
+<section class="offers">
+    <div class="container">
+        <div class="section-header">
+            <h2>Special Offers</h2>
+            <p>Exclusive deals and discounts on popular products</p>
+        </div>
+        <div class="offers-grid">
+            <div class="offer-card" style="background-color: var(--light-blue);">
+                <h3>New Users</h3>
+                <div class="offer-discount">20% OFF</div>
+                <p>Use code WELCOME20 on your first order above Rs.1000</p>
+                <a href="#" class="btn btn-white">Shop Now</a>
+            </div>
+            <div class="offer-card" style="background-color: var(--light-orange);">
+                <h3>Health Devices</h3>
+                <div class="offer-discount">15% OFF</div>
+                <p>Limited time offer on all health monitoring devices</p>
+                <a href="#" class="btn btn-white">Shop Now</a>
+            </div>
+            <div class="offer-card" style="background-color: var(--light-purple);">
+                <h3>Supplements</h3>
+                <div class="offer-discount">10% OFF</div>
+                <p>Buy any 2 supplements and get 10% off</p>
+                <a href="#" class="btn btn-white">Shop Now</a>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- NEWSLETTER SECTION -->
+<section class="newsletter">
+    <div class="container">
+        <div class="newsletter-content">
+            <h2>Subscribe to Our Newsletter</h2>
+            <p>Get updates on new products, special offers, and health tips delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>
 
 <!-- FOOTER -->
 <footer id="dynamic-footer"></footer>
@@ -401,10 +441,60 @@
             document.getElementById("dynamic-footer").innerHTML = data;
         })
         .catch((error) => {
-            console.error("Error loading header:", error);
+            console.error("Error loading footer:", error);
         });
 </script>
 
+<!-- JavaScript -->
 <script src="/e_commerce/pages/js/script.js"></script>
+<script src="/e_commerce/pages/js/auth-utils.js"></script>
+<script>
+    // Check if user is logged in
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+        // Update header display if user is logged in
+        if (currentUser) {
+            // This will be handled by header.js after the header is loaded
+            console.log("User is logged in:", currentUser.username);
+        }
+    });
+</script>
+<!-- Add this script just before the closing body tag -->
+<script>
+    // Direct handler for profile icon
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add direct click handler after DOM is loaded
+        const profileIcon = document.querySelector('.profile-icon');
+        if (profileIcon) {
+            profileIcon.onclick = function(e) {
+                e.preventDefault();
+                const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+                if (currentUser) {
+                    window.location.href = '/e_commerce/pages/pages/profile.html';
+                } else {
+                    window.location.href = '/e_commerce/pages/pages/login.html';
+                }
+            };
+        }
+
+        // Listen for clicks on the body and capture profile icon clicks
+        document.body.addEventListener('click', function(event) {
+            const target = event.target.closest('.profile-icon, .bx-user');
+            if (target) {
+                event.preventDefault();
+                console.log("Profile icon or user icon clicked");
+                const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+                if (currentUser) {
+                    window.location.href = '/e_commerce/pages/pages/profile.html';
+                } else {
+                    window.location.href = '/e_commerce/pages/pages/login.html';
+                }
+            }
+        });
+    });
+</script>
+
+<script src="/e_commerce/pages/js/navigation-fix.js"></script>
 </body>
 </html>

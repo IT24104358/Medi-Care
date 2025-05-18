@@ -1,4 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication state and update UI
+    if (typeof updateUIForAuthState === 'function') {
+        updateUIForAuthState();
+    }
+
+    // Explicitly add profile icon navigation
+    const setupProfileNavigation = () => {
+        const profileIcon = document.querySelector('.profile-icon');
+        if (profileIcon) {
+            profileIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log("Profile icon clicked");
+                if (currentUser) {
+                    window.location.href = '/e_commerce/pages/pages/profile.html';
+                } else {
+                    window.location.href = '/e_commerce/pages/pages/login.html';
+                }
+            });
+        }
+
+        // Also handle profile link in user actions
+        const profileLink = document.querySelector('.profile-link');
+        if (profileLink) {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/e_commerce/pages/pages/profile.html';
+            });
+        }
+    };
+
+    // Set timeout to ensure DOM is fully loaded including dynamically loaded elements
+    setTimeout(setupProfileNavigation, 500);
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileNav = document.querySelector('.mobile-nav');

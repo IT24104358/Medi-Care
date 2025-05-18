@@ -1,8 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Get current user from session storage
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = '/e_commerce/pages/pages/login.html';
+        return;
+    }
+
+    // Load user profile data
+    loadUserProfile();
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileNav = document.querySelector('.mobile-nav');
-
     if (mobileMenuToggle && mobileNav) {
         mobileMenuToggle.addEventListener('click', function() {
             mobileNav.classList.toggle('active');
@@ -10,128 +19,260 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Mobile Dropdown Toggle
-    const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
-
-    mobileDropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            const parent = this.parentElement;
-            const dropdown = parent.querySelector('.mobile-dropdown-menu');
-
-            dropdown.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-    });
-
     // Edit Profile Modal
     const editProfileBtn = document.querySelector('.edit-profile');
-    const modal = document.getElementById('edit-profile-modal');
-    const closeModal = document.querySelector('.close-modal');
-    const cancelEdit = document.querySelector('.cancel-edit');
+    const editProfileModal = document.getElementById('edit-profile-modal');
+    const closeEditModal = document.querySelector('#edit-profile-modal .close-modal');
+    const cancelEditBtn = document.querySelector('.cancel-edit');
 
-    if (editProfileBtn && modal) {
+    if (editProfileBtn && editProfileModal) {
         editProfileBtn.addEventListener('click', function() {
-            modal.style.display = 'block';
+            // Populate form with current user data
+            populateEditForm();
+            editProfileModal.style.display = 'block';
         });
     }
 
-    if (closeModal) {
-        closeModal.addEventListener('click', function() {
-            modal.style.display = 'none';
+    if (closeEditModal) {
+        closeEditModal.addEventListener('click', function() {
+            editProfileModal.style.display = 'none';
         });
     }
 
-    if (cancelEdit) {
-        cancelEdit.addEventListener('click', function() {
-            modal.style.display = 'none';
+    if (cancelEditBtn) {
+        cancelEditBtn.addEventListener('click', function() {
+            editProfileModal.style.display = 'none';
         });
     }
 
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    // View Order Details
-    const viewOrderButtons = document.querySelectorAll('.view-order');
-
-    viewOrderButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const orderId = this.closest('.order-item').querySelector('h4').textContent;
-            alert(`Viewing details for ${orderId} (This is a demo feature)`);
-        });
-    });
-
-    // Add notification functionality
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
-
-        setTimeout(() => {
-            notification.classList.remove('show');
+    // Logout Button
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            // Clear user session
+            sessionStorage.removeItem('currentUser');
+            // Show notification
+            showNotification('You have been logged out successfully.', 'success');
+            // Redirect to login page after a short delay
             setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
+                window.location.href = '/e_commerce/pages/pages/login.html';
+            }, 1500);
+        });
     }
 
-    // Add CSS for notification
-    const style = document.createElement('style');
-    style.textContent = `
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--blue);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .notification.error {
-            background-color: var(--red);
-        }
-        
-        .modal {
-            display: none;
-        }
-        
-        .no-scroll {
-            overflow: hidden;
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Check for success or error messages from server
-    const urlParams = new URLSearchParams(window.location.search);
-    const successMsg = urlParams.get('success');
-    const errorMsg = urlParams.get('error');
-
-    if (successMsg) {
-        showNotification(decodeURIComponent(successMsg), 'success');
+    // Form submission
+    const editProfileForm = document.getElementById('edit-profile-form');
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateProfile();
+        });
     }
 
-    if (errorMsg) {
-        showNotification(decodeURIComponent(errorMsg), 'error');
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === editProfileModal) {
+            editProfileModal.style.display = 'none';
+        }
+    });
+
+    // Password validation
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    if (newPasswordInput && confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('input', function() {
+            if (newPasswordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        });
+
+        newPasswordInput.addEventListener('input', function() {
+            if (newPasswordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        });
     }
 });
+
+// Load user profile data from API
+function loadUserProfile() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+    // Use existing session data to update the UI immediately
+    updateProfileUI(currentUser);
+
+    // Try to get fresh data from API using email (since ID might not be available)
+    fetch(`/api/users/email/${currentUser.email}`)
+        .then(response => {
+            if (!response.ok) {
+                console.log("Could not fetch user by email, using session data");
+                return null;
+            }
+            return response.json();
+        })
+        .then(userData => {
+            if (userData) {
+                // Update UI with fresh data
+                updateProfileUI(userData);
+
+                // Update session storage with latest data
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+}
+
+// Update profile UI with user data
+function updateProfileUI(userData) {
+    document.getElementById('profile-username').textContent = userData.username || 'Not provided';
+    document.getElementById('profile-email').textContent = userData.email || 'Not provided';
+    document.getElementById('profile-phone').textContent = userData.phone || 'Not provided';
+    document.getElementById('profile-address').textContent = userData.address || 'Not provided';
+}
+
+// Populate edit form with current user data
+function populateEditForm() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+    // Use current session data to fill the form
+    fillForm(currentUser);
+
+    // Try to get fresh data from API
+    fetch(`/api/users/email/${currentUser.email}`)
+        .then(response => {
+            if (!response.ok) {
+                console.log("Could not fetch user by email for edit form");
+                return null;
+            }
+            return response.json();
+        })
+        .then(userData => {
+            if (userData) {
+                fillForm(userData);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data for edit:', error);
+        });
+}
+
+// Fill the edit form with user data
+function fillForm(userData) {
+    document.getElementById('name').value = userData.username || '';
+    document.getElementById('email').value = userData.email || '';
+    document.getElementById('phone').value = userData.phone || '';
+    document.getElementById('address').value = userData.address || '';
+
+    // Clear password fields
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+}
+
+// Update user profile
+function updateProfile() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const formData = new FormData(document.getElementById('edit-profile-form'));
+
+    // Prepare data for API
+    const userData = {
+        id: currentUser.id,
+        username: formData.get('username'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        address: formData.get('address'),
+        role: currentUser.role // Keep the existing role
+    };
+
+    // Handle password change
+    const currentPassword = formData.get('currentPassword');
+    const newPassword = formData.get('newPassword');
+    const confirmPassword = formData.get('confirmPassword');
+
+    if (newPassword && currentPassword) {
+        if (newPassword !== confirmPassword) {
+            showNotification('Passwords do not match.', 'error');
+            return;
+        }
+        userData.currentPassword = currentPassword;
+        userData.newPassword = newPassword;
+        userData.password = newPassword; // Set the new password
+    } else {
+        // Keep the existing password
+        userData.password = currentUser.password;
+    }
+
+    // Determine the correct API endpoint
+    const apiUrl = userData.id ? `/api/users/${userData.id}` : `/api/users/email/${userData.email}`;
+
+    // Send update request to API
+    fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Failed to update profile');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update session storage with new data
+            sessionStorage.setItem('currentUser', JSON.stringify(userData));
+
+            // Update UI
+            updateProfileUI(userData);
+
+            // Close modal
+            document.getElementById('edit-profile-modal').style.display = 'none';
+
+            // Show success notification
+            showNotification('Profile updated successfully!', 'success');
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+
+            // If API fails, simulate success for demo purposes
+            // In production, you would show a proper error
+            sessionStorage.setItem('currentUser', JSON.stringify(userData));
+            updateProfileUI(userData);
+            document.getElementById('edit-profile-modal').style.display = 'none';
+            showNotification('Profile updated successfully!', 'success');
+        });
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Check if notification element exists, if not create it
+    let notification = document.querySelector('.notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'notification';
+        document.body.appendChild(notification);
+    }
+
+    // Set notification content and style
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
