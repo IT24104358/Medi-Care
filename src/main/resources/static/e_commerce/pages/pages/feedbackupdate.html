@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Feedback</title>
+  <link rel="stylesheet" href="../css/feedback.css">
+</head>
+<body>
+<div class="container">
+  <h1>Update Feedback</h1>
+  <form id="feedbackForm">
+    <input type="hidden" id="feedbackId">
+
+    <label>Comment</label>
+    <textarea id="comment" required></textarea>
+
+    <label>Rating (1-5)</label>
+    <div class="rating-buttons">
+      <button type="button" data-value="1">1</button>
+      <button type="button" data-value="2">2</button>
+      <button type="button" data-value="3">3</button>
+      <button type="button" data-value="4">4</button>
+      <button type="button" data-value="5">5</button>
+    </div>
+    <input type="hidden" id="rating" required>
+
+    <button type="submit">Update</button>
+  </form>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = Number(urlParams.get('id'));
+  let data = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+  let feedback = data.find(f => f.id === id);
+
+  if (!feedback) {
+    alert('Feedback not found');
+    window.location.href = 'feedbacklist.html';
+  }
+
+  document.getElementById('feedbackId').value = feedback.id;
+  document.getElementById('comment').value = feedback.comment;
+  document.getElementById('rating').value = feedback.rating;
+  document.querySelector(`.rating-buttons button[data-value="${feedback.rating}"]`).classList.add('selected');
+
+  const ratingButtons = document.querySelectorAll('.rating-buttons button');
+  const ratingInput = document.getElementById('rating');
+
+  ratingButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      ratingButtons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      ratingInput.value = button.getAttribute('data-value');
+    });
+  });
+
+  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    feedback.comment = document.getElementById('comment').value;
+    feedback.rating = document.getElementById('rating').value;
+
+    const updated = data.map(f => f.id === feedback.id ? feedback : f);
+    localStorage.setItem('feedbacks', JSON.stringify(updated));
+
+    alert('Feedback updated!');
+    window.location.href = 'feedbacklist.html';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+package com.example.medicalstore.repository;
+
+import com.example.medicalstore.model.Feedback;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Repository;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+@Repository
+public class FeedbackFileRepository {
+    private static final String FILE_PATH = "src/main/resources/data/feedbacks.json";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public List<Feedback> findAll() {
+        try {
+            File file = new File(FILE_PATH);
+            if (!file.exists()) return new ArrayList<>();
+            return objectMapper.readValue(file, new TypeReference<List<Feedback>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Optional<Feedback> findById(Long id) {
+        return findAll().stream().filter(fb -> fb.getId().equals(id)).findFirst();
+    }
+
+    public Feedback save(Feedback feedback) {
+        List<Feedback> feedbacks = findAll();
+
+        if (feedback.getId() == null) {
+            long maxId = feedbacks.stream().mapToLong(Feedback::getId).max().orElse(0);
+            feedback.setId(maxId + 1);
+            feedbacks.add(feedback);
+        } else {
+            for (int i = 0; i < feedbacks.size(); i++) {
+                if (feedbacks.get(i).getId().equals(feedback.getId())) {
+                    feedbacks.set(i, feedback);
+                    break;
+                }
+            }
+        }
+
+        saveAll(feedbacks);
+        return feedback;
+    }
+
+    public void delete(Long id) {
+        List<Feedback> feedbacks = findAll();
+        feedbacks.removeIf(f -> f.getId().equals(id));
+        saveAll(feedbacks);
+    }
+
+    private void saveAll(List<Feedback> feedbacks) {
+        try {
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs();
+            objectMapper.writeValue(file, feedbacks);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

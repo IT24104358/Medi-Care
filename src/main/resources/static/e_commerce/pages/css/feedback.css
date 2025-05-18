@@ -1,0 +1,102 @@
+/* General reset and container setup */
+body {
+    background-color: #f9fafb;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header and Add New button */
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937; /* gray-900 */
+    margin-bottom: 24px;
+}
+
+a[href="feedbackcreate.html"] {
+    display: inline-block;
+    background-color: #14b8a6; /* teal-500 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+a[href="feedbackcreate.html"]:hover {
+    background-color: #0d9488; /* teal-600 */
+}
+
+/* Card grid layout */
+#list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* Card styling */
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card p {
+    margin: 8px 0;
+    color: #374151; /* gray-700 */
+}
+
+.card strong {
+    color: #111827; /* gray-900 */
+}
+
+/* Buttons inside card */
+.card button {
+    padding: 8px 16px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.card button:first-of-type {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+}
+
+.card button:first-of-type:hover {
+    background-color: #2563eb; /* blue-600 */
+}
+
+.card button:last-of-type {
+    background-color: #ef4444; /* red-500 */
+    color: white;
+}
+
+.card button:last-of-type:hover {
+    background-color: #dc2626; /* red-600 */
+}
+
+/* No feedback text */
+#list p {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #6b7280; /* gray-500 */
+}
