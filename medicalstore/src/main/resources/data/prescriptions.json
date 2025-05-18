@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "doctorName": "Dr. Silva",
+    "description": "Back pain treatment",
+    "photoUrl": "image_1.png"
+  },
+  {
+    "id": 2,
+    "doctorName": "Dr. Fernando",
+    "description": "Flu symptoms",
+    "photoUrl": "image_2.png"
+  }
+]

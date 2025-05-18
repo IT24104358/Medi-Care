@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Feedback</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Submit Feedback</h1>
+    <form id="feedbackForm">
+        <label>Comment</label>
+        <textarea id="comment" required></textarea>
+
+        <label>Rating (1-5)</label>
+        <div class="rating-buttons">
+            <button type="button" data-value="1">1</button>
+            <button type="button" data-value="2">2</button>
+            <button type="button" data-value="3">3</button>
+            <button type="button" data-value="4">4</button>
+            <button type="button" data-value="5">5</button>
+        </div>
+        <input type="hidden" id="rating" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    const ratingButtons = document.querySelectorAll('.rating-buttons button');
+    const ratingInput = document.getElementById('rating');
+
+    ratingButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            ratingButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            ratingInput.value = button.getAttribute('data-value');
+        });
+    });
+
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const comment = document.getElementById('comment').value;
+        const rating = document.getElementById('rating').value;
+
+        const feedback = {
+            id: Date.now(),
+            comment: comment,
+            rating: rating
+        };
+
+        let data = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+        data.push(feedback);
+        localStorage.setItem('feedbacks', JSON.stringify(data));
+
+        alert('Feedback submitted!');
+        window.location.href = 'feedbacklist.html';
+    });
+</script>
+</body>
+</html>

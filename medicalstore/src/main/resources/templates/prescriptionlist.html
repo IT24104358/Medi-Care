@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prescription List</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        img {
+            max-width: 25%;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .actions {
+            margin-top: 0.5rem;
+        }
+        .btn {
+            margin-right: 5px;
+            padding: 0.4rem 1rem;
+            border: none;
+            cursor: pointer;
+            color: white;
+        }
+        .btn-update {
+            background-color: #0ea5e9;
+        }
+        .btn-delete {
+            background-color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Prescription List</h1>
+    <a href="prescriptioncreate.html" class="btn btn-update">Add New</a>
+    <div id="list"></div>
+</div>
+
+<script>
+    const listContainer = document.getElementById('list');
+    const data = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+
+    if (data.length === 0) {
+        listContainer.innerHTML = '<p>No prescriptions found.</p>';
+    } else {
+        data.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+          <h3>Prescription ID: ${p.id}</h3>
+          <p><strong>Doctor:</strong> ${p.doctorName}</p>
+          <p><strong>Description:</strong> ${p.description}</p>
+          ${p.photo ? `<img src="${p.photo}" alt="Prescription Photo">` : ''}
+          <div class="actions">
+            <button class="btn btn-update" onclick="edit(${p.id})">Update</button>
+            <button class="btn btn-delete" onclick="del(${p.id})">Delete</button>
+          </div>
+        `;
+            listContainer.appendChild(div);
+        });
+    }
+
+    function del(id) {
+        const updated = data.filter(p => p.id !== id);
+        localStorage.setItem('prescriptions', JSON.stringify(updated));
+        alert('Prescription deleted!');
+        location.reload();
+    }
+
+    function edit(id) {
+        window.location.href = `prescriptionupdate.html?id=${id}`;
+    }
+</script>
+</body>
+</html>
