@@ -2,58 +2,162 @@ package com.medicare.medicare.controller;
 
 import com.medicare.medicare.model.User;
 import com.medicare.medicare.service.UserService;
-import com.medicare.medicare.service.UserServiceImpl;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Controller
-@RequestMapping("/api/user")
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService = new UserServiceImpl();
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
 
-    @GetMapping("/profile")
-    public String showProfile(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) {
-            logger.warn("No user found in session, redirecting to login");
-            return "redirect:/login";
-        }
-        logger.info("Displaying profile for user: {}", user.getEmail());
-        model.addAttribute("user", user);
-        return "profile";
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/update-profile")
-    public String updateProfile(@ModelAttribute User updatedUser, HttpSession session, Model model) {
-        User currentUser = (User) session.getAttribute("loggedInUser");
-        if (currentUser == null) {
-            logger.warn("No user found in session, redirecting to login");
-            return "redirect:/login";
+    // Add this endpoint to get all users
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // Get user by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.findById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
         }
+    }
 
-        logger.info("Updating profile for user ID: {}", currentUser.getId());
-        currentUser.setUsername(updatedUser.getUsername());
-        currentUser.setEmail(updatedUser.getEmail());
-        currentUser.setPhone(updatedUser.getPhone());
-        currentUser.setAddress(updatedUser.getAddress());
-        currentUser.setPassword(currentUser.getPassword());
-        currentUser.setRole(currentUser.getRole());
+    // Get user by email (for profile page)
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
-            userService.updateUser(currentUser);
-            session.setAttribute("loggedInUser", currentUser);
-            model.addAttribute("success", "Profile updated successfully");
-            logger.info("Profile updated successfully for user ID: {}", currentUser.getId());
+            // Check if email already exists
+            if (userService.findByEmail(user.getEmail()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("message", "Email already registered"));
+            }
+
+            User registeredUser = userService.register(user);
+            return ResponseEntity.ok(Map.of("message", "User registered successfully"));
         } catch (Exception e) {
-            model.addAttribute("error", "Failed to update profile");
-            logger.error("Error updating profile for user ID: {}: {}", currentUser.getId(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Registration failed: " + e.getMessage()));
         }
-        return "redirect:/user/profile";
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        User user = userService.authenticate(email, password);
+
+        if (user != null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("id", user.getId());          // Add ID
+            response.put("username", user.getUsername());
+            response.put("email", user.getEmail());    // Add email
+            response.put("phone", user.getPhone());    // Add phone
+            response.put("address", user.getAddress()); // Add address
+            response.put("isAdmin", user.isAdmin());
+            response.put("role", user.getRole());      // Add role
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid email or password"));
+        }
+    }
+
+    // Debug endpoint - remove in production
+    @GetMapping("/debug/all")
+    public ResponseEntity<List<Map<String, Object>>> debugAllUsers() {
+        List<User> users = userService.getAllUsers();
+
+        // Convert to a simple format without revealing passwords
+        List<Map<String, Object>> result = users.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getId());
+                    map.put("username", user.getUsername());
+                    map.put("email", user.getEmail().trim()); // Ensure no whitespace
+                    map.put("role", user.getRole());
+                    map.put("hasPassword", user.getPassword() != null && !user.getPassword().isEmpty());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
+
+    // Update user by email (for profile page)
+    @PutMapping("/email/{email}")
+    public ResponseEntity<?> updateUserByEmail(@PathVariable String email, @RequestBody User updatedUser) {
+        try {
+            // Check if user exists
+            User existingUser = userService.findByEmail(email);
+            if (existingUser == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Set ID from existing user
+            updatedUser.setId(existingUser.getId());
+
+            // Update
+            User result = userService.update(updatedUser);
+            return ResponseEntity.ok(Map.of("message", "User updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Update failed: " + e.getMessage()));
+        }
+    }
+
+    // Delete user
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            User existingUser = userService.findById(id);
+
+            if (existingUser == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Don't allow deleting admin users
+            if (existingUser.getRole().equalsIgnoreCase("ADMIN")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Admin users cannot be deleted"));
+            }
+
+            userService.deleteUser(id);
+            return ResponseEntity.ok(Map.of("message", "User deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Deletion failed: " + e.getMessage()));
+        }
     }
 }
