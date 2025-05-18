@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback List</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Feedback List</h1>
+    <a href="feedbackcreate.html">Add New</a>
+    <div id="list"></div>
+</div>
+
+<script>
+    const data = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    const list = document.getElementById('list');
+
+    if (!data.length) {
+        list.innerHTML = '<p>No feedbacks yet.</p>';
+    } else {
+        data.forEach(fb => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+          <p><strong>Comment:</strong> ${fb.comment}</p>
+          <p><strong>Rating:</strong> ${fb.rating}/5</p>
+          <button onclick="edit(${fb.id})">Edit</button>
+          <button onclick="del(${fb.id})">Delete</button>
+        `;
+            list.appendChild(div);
+        });
+    }
+
+    function edit(id) {
+        window.location.href = `feedbackupdate.html?id=${id}`;
+    }
+
+    function del(id) {
+        let updated = data.filter(f => f.id !== id);
+        localStorage.setItem('feedbacks', JSON.stringify(updated));
+        alert('Feedback deleted.');
+        location.reload();
+    }
+</script>
+</body>
+</html>

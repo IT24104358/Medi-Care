@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Prescription</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #0f766e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Submit Prescription</h1>
+    <form id="prescriptionForm">
+        <label for="doctor">Doctor</label>
+        <select id="doctor" required>
+            <option value="">Select a Doctor</option>
+            <option value="Dr. Silva">Dr. Silva</option>
+            <option value="Dr. Fernando">Dr. Fernando</option>
+        </select>
+
+        <label for="description">Description</label>
+        <textarea id="description" rows="3" required></textarea>
+
+        <label for="photo">Upload Prescription Photo</label>
+        <input type="file" id="photo" accept="image/*" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('prescriptionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const doctor = document.getElementById('doctor').value;
+        const description = document.getElementById('description').value;
+        const photoFile = document.getElementById('photo').files[0];
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            const prescription = {
+                id: Date.now(),
+                doctorName: doctor,
+                description: description,
+                photo: reader.result // base64 encoded
+            };
+
+            let data = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+            data.push(prescription);
+            localStorage.setItem('prescriptions', JSON.stringify(data));
+
+            alert('Prescription submitted!');
+            window.location.href = 'prescriptionlist.html';
+        };
+
+        if (photoFile) {
+            reader.readAsDataURL(photoFile);
+        }
+    });
+</script>
+</body>
+</html>

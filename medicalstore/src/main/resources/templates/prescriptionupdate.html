@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Prescription</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Update Prescription</h1>
+    <form id="updateForm">
+        <input type="hidden" id="prescriptionId">
+
+        <label for="doctor">Doctor</label>
+        <select id="doctor" required>
+            <option value="">Select a Doctor</option>
+            <option value="Dr. Silva">Dr. Silva</option>
+            <option value="Dr. Fernando">Dr. Fernando</option>
+        </select>
+
+        <label for="description">Description</label>
+        <textarea id="description" rows="3" required></textarea>
+
+        <label for="photo">Upload New Photo (optional)</label>
+        <input type="file" id="photo" accept="image/*">
+
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = parseInt(urlParams.get('id'));
+    const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+    const prescription = prescriptions.find(p => p.id === id);
+
+    if (!prescription) {
+        alert("Prescription not found");
+        window.location.href = "prescriptionlist.html";
+    }
+
+    document.getElementById('prescriptionId').value = prescription.id;
+    document.getElementById('doctor').value = prescription.doctorName;
+    document.getElementById('description').value = prescription.description;
+
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const updatedDoctor = document.getElementById('doctor').value;
+        const updatedDesc = document.getElementById('description').value;
+        const photoInput = document.getElementById('photo').files[0];
+
+        const updateAndSave = (photoData) => {
+            prescription.doctorName = updatedDoctor;
+            prescription.description = updatedDesc;
+            if (photoData) prescription.photo = photoData;
+
+            const updatedList = prescriptions.map(p => p.id === id ? prescription : p);
+            localStorage.setItem('prescriptions', JSON.stringify(updatedList));
+
+            alert("Prescription updated!");
+            window.location.href = 'prescriptionlist.html';
+        };
+
+        if (photoInput) {
+            const reader = new FileReader();
+            reader.onload = () => updateAndSave(reader.result);
+            reader.readAsDataURL(photoInput);
+        } else {
+            updateAndSave(null);
+        }
+    });
+</script>
+</body>
+</html>
