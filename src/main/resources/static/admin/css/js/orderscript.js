@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderCheckboxes = document.querySelectorAll('.order-select');
     const exportOrdersBtn = document.getElementById('exportOrdersBtn');
     const printInvoicesBtn = document.getElementById('printInvoicesBtn');
-    const applyBulkActionBtn = document.getElementById('applyBulkAction');
-    const dateRangeSelect = document.getElementById('dateRange');
-    const customDateRange = document.getElementById('customDateRange');
-    const viewOrderBtns = document.querySelectorAll('.btn-view');
-    const editOrderBtns = document.querySelectorAll('.btn-edit');
-    const paginationBtns = document.querySelectorAll('.page-btn');
-    const changeStatusSelect = document.getElementById('changeStatus');
-    const statusUpdateBtn = document.querySelector('.status-update .btn-primary');
+    // const applyBulkActionBtn = document.getElementById('applyBulkAction');
+    // const dateRangeSelect = document.getElementById('dateRange');
+    // const customDateRange = document.getElementById('customDateRange');
+    // const viewOrderBtns = document.querySelectorAll('.btn-view');
+    // const editOrderBtns = document.querySelectorAll('.btn-edit');
+    // const paginationBtns = document.querySelectorAll('.page-btn');
+    // const changeStatusSelect = document.getElementById('changeStatus');
+    // const statusUpdateBtn = document.querySelector('.status-update .btn-primary');
 
     // Toggle Sidebar
     if (menuBtn) {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(order => {
                 // Set general info
-                document.getElementById('modal-order-id').textContent = order.orderId;
+                document.getElementById('modal-order-id').textContent = order.id;
                 document.getElementById('modal-order-date').textContent = order.orderDate;
                 document.getElementById('modal-order-status').textContent = order.status;
 

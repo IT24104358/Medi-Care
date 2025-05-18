@@ -659,3 +659,11 @@ body.dark .todo-entry {
 body.dark .todo-entry p {
     color: var(--text-color);
 }
+
+.header-right-part {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+}
