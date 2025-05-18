@@ -3,54 +3,59 @@ package com.medicare.medicare.controller;
 import com.medicare.medicare.model.Order;
 import com.medicare.medicare.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "*") // Allow CORS for frontend
 public class OrderController {
 
     private final OrderService orderService;
 
-
     @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
-
     }
 
-    // Simple order summary list
     @GetMapping
     public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
+        return orderService.findAll();
     }
 
-    // Simple order summary by ID (Long)
+    @GetMapping("/user/{userId}")
+    public List<Order> getUserOrders(@PathVariable Long userId) {
+        return orderService.findByUserId(userId);
+    }
+
     @GetMapping("/{id}")
-    public Optional<Order> getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+        Order order = orderService.findById(id);
+        if (order != null) {
+            return ResponseEntity.ok(order);
+        }
+        return ResponseEntity.notFound().build();
     }
-
-    // Full order details by Order ID (String)
-    @GetMapping("/details/{orderId}")
-    
 
     @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+    public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
+        Order placedOrder = orderService.placeOrder(order);
+        return ResponseEntity.ok(placedOrder);
     }
 
-    @PutMapping("/{id}")
-    public Order updateOrder(@PathVariable Long id, @RequestBody Order updatedOrder) {
-        return orderService.updateOrder(id, updatedOrder);
-    }
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> status) {
+        String newStatus = status.get("status");
+        if (newStatus == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Status is required"));
+        }
 
-    @DeleteMapping("/{id}")
-    public String deleteOrder(@PathVariable Long id) {
-        boolean deleted = orderService.deleteOrder(id);
-        return deleted ? "Order deleted" : "Order not found";
+        Order updatedOrder = orderService.updateOrderStatus(id, newStatus);
+        if (updatedOrder != null) {
+            return ResponseEntity.ok(updatedOrder);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
