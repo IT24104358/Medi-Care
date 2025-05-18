@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     // Full order details by Order ID (String)
-    @GetMapping("/details/{orderId}")
+//    @GetMapping("/details/{orderId}")
     
 
     @PostMapping
